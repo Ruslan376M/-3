@@ -220,6 +220,20 @@ class Storage
 			if (current->next != NULL)
 				current = current->next;
 	}
+
+	bool check(MaterialObject& object) // Проверяет наличие объекта с одинаковым указателем в хранилище
+	{
+		Node* buffer = first;
+		for (int i = 0; i < size; i++, buffer = buffer->next)
+			if (&buffer->object == &object)
+				return true;
+		return false;
+	}
+	
+	virtual ~Storage()
+	{
+
+	}
 };
 
 int main()
