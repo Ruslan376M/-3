@@ -231,6 +231,29 @@ public:
 		return false;
 	}
 	
+	MaterialObject& getFirst() // Возвращает ссылку на первый объект в списке
+	{
+		return first->object;
+	}
+
+	MaterialObject& getLast() // Возвращает ссылку на последний объект в списке
+	{
+		return last->object;
+	}
+
+	MaterialObject& getCurrent() // Возвращает ссылку на текущий объект
+	{
+		return current->object;
+	}
+
+	bool eol() // End Of List
+	{
+		if (current->next == NULL)
+			return true;
+		else
+			return false;
+	}
+
 	virtual ~Storage()
 	{
 		current = first;
