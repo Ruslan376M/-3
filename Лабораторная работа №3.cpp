@@ -132,6 +132,96 @@ public:
 	}
 };
 
+class Storage
+{
+	struct Node
+	{
+		MaterialObject object;
+		Node* previous = NULL;
+		Node* next = NULL;
+	};
+
+	int size;
+	Node* first;
+	Node* last;
+	Node* current;
+
+	Storage()
+	{
+		size = 0;
+		first = NULL;
+		last = NULL;
+		current = NULL;
+		printf("Создан объект Storage, size = 0\n");
+	}
+
+	void add(MaterialObject& object)
+	{
+		Node* temp = new Node();
+		temp->object = object;
+		size++;
+
+		if (first == NULL)
+		{
+			first = temp;
+			last = temp;
+			current = temp;
+		}
+		else
+		{
+			last->next = temp;
+			temp->previous = last;
+			last = temp;
+		}
+	}
+
+	void del() // Удаляет элемент, на который указывает текущий указатель
+	{
+		if (current != NULL)
+		{
+			// Переназначение указателей соседних элементов 
+			if(current->previous != NULL)
+				current->previous->next = current->next;
+			if(current->next != NULL)
+				current->next->previous = current->previous;
+
+			// Перевод current на следующий или предыдущий элемент
+			Node* oldCurrent = current;
+
+			if (current->next != NULL)
+				current = current->next;
+			else if (current->previous != NULL)
+				current = current->previous;
+			else
+				current = NULL;
+
+			// Смена указателей first и last, если current был им равен
+			if (oldCurrent == first)
+				first = current;
+			if (oldCurrent == last)
+				last = current;
+
+			// Удаление элемента из списка
+			size--;
+			delete oldCurrent;
+		}
+	}
+
+	void previous() // Возвращает указатель current на предыдущий элемент в списке, если предыдущий элемент существует
+	{
+		if (current != NULL)
+			if (current->previous != NULL)
+				current = current->previous;
+	}
+
+	void next() // Возвращает указатель current на следующий элемент в списке, если следующий элемент существует
+	{
+		if (current != NULL)
+			if (current->next != NULL)
+				current = current->next;
+	}
+};
+
 int main()
 {
 	setlocale(LC_ALL, "Russian");
