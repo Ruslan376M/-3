@@ -134,6 +134,7 @@ public:
 
 class Storage
 {
+private:
 	struct Node
 	{
 		MaterialObject object;
@@ -145,7 +146,7 @@ class Storage
 	Node* first;
 	Node* last;
 	Node* current;
-
+public:
 	Storage()
 	{
 		size = 0;
@@ -155,7 +156,7 @@ class Storage
 		printf("Создан объект Storage, size = 0\n");
 	}
 
-	void add(MaterialObject& object)
+	void add(MaterialObject& object) // Добавляет объект в хранилище
 	{
 		Node* temp = new Node();
 		temp->object = object;
@@ -221,7 +222,7 @@ class Storage
 				current = current->next;
 	}
 
-	bool check(MaterialObject& object) // Проверяет наличие объекта с одинаковым указателем в хранилище
+	bool check(MaterialObject& object) // Проверяет наличие объекта с тем же указателем в хранилище
 	{
 		Node* buffer = first;
 		for (int i = 0; i < size; i++, buffer = buffer->next)
