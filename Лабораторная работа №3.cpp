@@ -232,7 +232,14 @@ class Storage
 	
 	virtual ~Storage()
 	{
-
+		current = first;
+		for (int i = 0; i < size; i++)
+		{
+			Node* buffer = current->next;
+			delete current;
+			current = buffer;
+		}
+		printf("Удалён объект Storage, size = %i\n", size);
 	}
 };
 
