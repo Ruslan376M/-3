@@ -1,5 +1,6 @@
 ﻿#include <iostream>
 #include <locale.h>
+#include <time.h> 
 
 class MaterialObject
 {
@@ -185,7 +186,7 @@ class Storage
 private:
 	struct Node
 	{
-		MaterialObject object;
+		MaterialObject* object;
 		Node* previous = NULL;
 		Node* next = NULL;
 	};
@@ -204,7 +205,7 @@ public:
 		printf("Создан объект Storage, size = 0\n");
 	}
 
-	void add(MaterialObject& object) // Добавляет объект в хранилище в конец списка
+	void add(MaterialObject* object) // Добавляет объект в хранилище в конец списка
 	{
 		Node* temp = new Node();
 		temp->object = object;
@@ -252,6 +253,7 @@ public:
 
 			// Удаление элемента из списка
 			size--;
+			delete oldCurrent->object;
 			delete oldCurrent;
 		}
 	}
@@ -270,11 +272,11 @@ public:
 				current = current->next;
 	}
 
-	bool check(MaterialObject& object) // Проверяет наличие объекта с тем же указателем в хранилище
+	bool check(MaterialObject* object) // Проверяет наличие объекта с тем же указателем в хранилище
 	{
 		Node* buffer = first;
 		for (int i = 0; i < size; i++, buffer = buffer->next)
-			if (&buffer->object == &object)
+			if (buffer->object == object)
 				return true;
 		return false;
 	}
@@ -284,17 +286,17 @@ public:
 		return size;
 	}
 
-	MaterialObject& getFirst() // Возвращает ссылку на первый объект в списке
+	MaterialObject* getFirst() // Возвращает ссылку на первый объект в списке
 	{
 		return first->object;
 	}
 
-	MaterialObject& getLast() // Возвращает ссылку на последний объект в списке
+	MaterialObject* getLast() // Возвращает ссылку на последний объект в списке
 	{
 		return last->object;
 	}
 
-	MaterialObject& getCurrent() // Возвращает ссылку на текущий объект
+	MaterialObject* getCurrent() // Возвращает ссылку на текущий объект
 	{
 		return current->object;
 	}
@@ -337,30 +339,58 @@ int main()
 	int count = 10;
 	while (count < 10000)
 	{
+		clock_t start = clock();
 		count *= 10;
 		for (int i = 0; i < count; i++)
 		{
+			printf("[%i]", i+1);
 			int key = rand();
 			
 			if (box->getSize() == 0 || key % 5 <= 1) // Добавить объект
 			{
 				if (key % 3 == 0)
-					box->add(*(new Food(key % 1000, key % 100)));
+					box->add(new Food(key % 1000, key % 100));
 				else if (key % 3 == 1)
-					box->add(*(new Clothes(key % 500, key % 200)));
+					box->add(new Clothes(key % 500, key % 200));
 				else if (key % 3 == 2)
-					box->add(*(new Book(key % 500, key % 100)));
+					box->add(new Book(key % 500, key % 100));
 			}
 			else if (key % 5 == 2) // Удалить объект
 			{
-				for (int j = 0; j < (key % box->getSize()); j++)
+				box->setFirst();
+				for (int j = 0; j < (key % box->getSize()); j++, box->next())
 					;
-				int j = 0;
-				while (j != key % box->getSize())
-				{
-
-				}
+				box->del();
+			}
+			else if (key % 5 == 3) // Вызов message()
+			{
+				box->setFirst();
+				for (int j = 0; j < (key % box->getSize()); j++, box->next())
+					;
+				box->getCurrent()->message();
+			}
+			else if (key % 5 == 4) // Вызов личного метода объекта
+			{
+				box->setFirst();
+				for (int j = 0; j < (key % box->getSize()); j++, box->next())
+					;
+				MaterialObject* buffer = box->getCurrent();
+				Food* obj1;
+				Clothes* obj2;
+				Book* obj3;
+				if (obj1 = dynamic_cast<Food*>(buffer))
+					obj1->eatFood(key);
+				else if (obj2 = dynamic_cast<Clothes*>(buffer))
+					obj2->putOnSomeClothes(key);
+				else if (obj3 = dynamic_cast<Book*>(buffer))
+					obj3->readBook(key);
 			}
 		}
+		clock_t end = clock();
+		double seconds = (double)(end - start) / CLOCKS_PER_SEC;
+		printf("Время работы: %f сек.\n", seconds);
+		system("pause");
 	}
+	delete box;
+	system("pause");
 }
