@@ -59,6 +59,22 @@ public:
 		printf("Скопирован объект Food, mass = %f, volume = %f\n", mass, volume);
 	}
 
+	void eatFood(int choice)
+	{
+		printf("Съели ");
+		std::string buffer;
+		switch (choice % 5)
+		{
+			case 0: buffer = "яблоко"; break;
+			case 1: buffer = "грушу"; break;
+			case 2: buffer = "банан"; break;
+			case 3: buffer = "апельсин"; break;
+			case 4: buffer = "виноград"; break;
+			default: buffer = "лимон"; break;
+		}
+		std::cout << buffer << std::endl;
+	}
+
 	virtual void message()
 	{
 		printf("Этот объект принадлежит классу Food\n");
@@ -90,6 +106,22 @@ public:
 		printf("Скопирован объект Clothes, mass = %f, volume = %f\n", mass, volume);
 	}
 
+	void putOnSomeClothes(int choice)
+	{
+		printf("Надели ");
+		std::string buffer;
+		switch (choice % 5)
+		{
+		case 0: buffer = "свитер"; break;
+		case 1: buffer = "футболку"; break;
+		case 2: buffer = "джинсы"; break;
+		case 3: buffer = "носки"; break;
+		case 4: buffer = "куртку"; break;
+		default: buffer = "шапку"; break;
+		}
+		std::cout << buffer << std::endl;
+	}
+
 	virtual void message()
 	{
 		printf("Этот объект принадлежит классу Clothes\n");
@@ -119,6 +151,22 @@ public:
 		:MaterialObject(object)
 	{
 		printf("Скопирован объект Book, mass = %f, volume = %f\n", mass, volume);
+	}
+
+	void readBook(int choice)
+	{
+		printf("Прочитали книгу ");
+		std::string buffer;
+		switch (choice % 5)
+		{
+		case 0: buffer = "Пушкина"; break;
+		case 1: buffer = "Толстого"; break;
+		case 2: buffer = "Островского"; break;
+		case 3: buffer = "Гоголя"; break;
+		case 4: buffer = "Достоевского"; break;
+		default: buffer = "Грибоедова"; break;
+		}
+		std::cout << buffer << std::endl;
 	}
 
 	virtual void message()
@@ -156,7 +204,7 @@ public:
 		printf("Создан объект Storage, size = 0\n");
 	}
 
-	void add(MaterialObject& object) // Добавляет объект в хранилище
+	void add(MaterialObject& object) // Добавляет объект в хранилище в конец списка
 	{
 		Node* temp = new Node();
 		temp->object = object;
@@ -231,6 +279,11 @@ public:
 		return false;
 	}
 	
+	int getSize()
+	{
+		return size;
+	}
+
 	MaterialObject& getFirst() // Возвращает ссылку на первый объект в списке
 	{
 		return first->object;
@@ -244,6 +297,16 @@ public:
 	MaterialObject& getCurrent() // Возвращает ссылку на текущий объект
 	{
 		return current->object;
+	}
+
+	void setFirst() // Устанавливает текущий указатель на начало списка
+	{
+		current = first;
+	}
+
+	void setLast() // Устанавливает текущий указатель в конец списка
+	{
+		current = last;
 	}
 
 	bool eol() // End Of List
@@ -270,5 +333,34 @@ public:
 int main()
 {
 	setlocale(LC_ALL, "Russian");
+	Storage* box = new Storage();
+	int count = 10;
+	while (count < 10000)
+	{
+		count *= 10;
+		for (int i = 0; i < count; i++)
+		{
+			int key = rand();
+			
+			if (box->getSize() == 0 || key % 5 <= 1) // Добавить объект
+			{
+				if (key % 3 == 0)
+					box->add(*(new Food(key % 1000, key % 100)));
+				else if (key % 3 == 1)
+					box->add(*(new Clothes(key % 500, key % 200)));
+				else if (key % 3 == 2)
+					box->add(*(new Book(key % 500, key % 100)));
+			}
+			else if (key % 5 == 2) // Удалить объект
+			{
+				for (int j = 0; j < (key % box->getSize()); j++)
+					;
+				int j = 0;
+				while (j != key % box->getSize())
+				{
 
+				}
+			}
+		}
+	}
 }
